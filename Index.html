@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fishing Quest - In Development</title>
+  <meta name="description" content="A cute 2D fishing game in development. Download the latest demo and follow along as new challenges are added." />
+  <style>
+    :root {
+      --bg: #031625;
+      --bg-alt: #071e33;
+      --card: rgba(10, 35, 70, 0.9);
+      --text: #eaf6ff;
+      --muted: #bfd4f0;
+      --accent: #29d3c0;
+      --accent-soft: #a5f3fc;
+      --pink: #ff6ba8;
+      --yellow: #ffe68a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56,189,248,0.25), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(244,114,182,0.2), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(45,212,191,0.24), transparent 55%),
+        linear-gradient(180deg, #020617, #020617 40%, #012031 100%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 18px 72px;
+    }
+
+    header {
+      margin-bottom: 28px;
+      padding: 20px 18px;
+      border-radius: 18px;
+      background:
+        linear-gradient(120deg, rgba(56,189,248,0.4), rgba(244,114,182,0.42)),
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,0.08), transparent 55%);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      inset: -80px;
+      background-image:
+        radial-gradient(circle at 20px 20px, rgba(255,255,255,0.18) 0, transparent 55%),
+        radial-gradient(circle at 260px -20px, rgba(255,255,255,0.2) 0, transparent 55%),
+        radial-gradient(circle at 100% 90%, rgba(56,189,248,0.2) 0, transparent 65%);
+      opacity: 0.32;
+      pointer-events: none;
+    }
+
+    header > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      color: var(--accent-soft);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--yellow);
+      box-shadow: 0 0 6px rgba(250,250,210,0.9);
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin: 0 0 6px;
+      text-shadow: 0 3px 12px rgba(15,23,42,0.9);
+    }
+
+    p.lead {
+      font-size: 1.05rem;
+      margin: 0 auto 4px;
+      max-width: 680px;
+      color: var(--text);
+    }
+
+    p.sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .hero {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-card {
+      background: var(--card);
+      padding: 20px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 18px 50px rgba(15,23,42,0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.16) 0, transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(244,114,182,0.18) 0, transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-size: 1.6rem;
+      margin: 0 0 6px;
+    }
+
+    .hero-text {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .download-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      color: #04101b;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(6,182,212,0.7);
+      border: 1px solid rgba(240,253,250,0.8);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .download:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 12px 32px rgba(6,182,212,0.85);
+    }
+
+    .download span.icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(4,24,34,0.8);
+      color: var(--accent-soft);
+      font-size: 0.8rem;
+    }
+
+    .download-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--accent-soft);
+      margin-top: 10px;
+    }
+
+    .tagline-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .image-frame {
+      background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.6), transparent 55%),
+                  radial-gradient(circle at 80% 80%, rgba(244,114,182,0.6), transparent 60%),
+                  var(--bg-alt);
+      border-radius: 20px;
+      padding: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 16px 42px rgba(15,23,42,0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 10% 0%, rgba(255,255,255,0.18) 0, transparent 50%),
+        radial-gradient(circle at 90% 100%, rgba(37,99,235,0.4) 0, transparent 65%);
+      mix-blend-mode: screen;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .image-inner {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .image-inner img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .image-sticker {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15,23,42,0.88);
+      color: var(--yellow);
+      font-size: 0.7rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px dashed rgba(248,250,252,0.5);
+      box-shadow: 0 6px 14px rgba(15,23,42,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .image-sticker-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 0 6px rgba(248,113,150,0.9);
+    }
+
+    .sections {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(15,23,42,0.9);
+      border-radius: 18px;
+      padding: 16px 16px 18px;
+      border: 1px solid rgba(148,163,184,0.42);
+      box-shadow: 0 16px 40px rgba(15,23,42,0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.2), transparent 55%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent-soft);
+      margin-bottom: 6px;
+    }
+
+    .card-label-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--pink);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      margin: 0 0 6px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.93rem;
+      color: var(--muted);
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.82rem;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 50px 20px 84px;
+      }
+      header {
+        text-align: left;
+        padding: 22px 24px;
+      }
+      h1 {
+        font-size: 2.7rem;
+      }
+      .hero {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+        gap: 22px;
+      }
+      .hero-card {
+        padding: 22px 22px 20px;
+      }
+      .sections {
+        grid-template-columns: 1.2fr 1.1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        In-development fishing game
+      </div>
+      <h1>Fishing Quest</h1>
+      <p class="lead">A cute, easy-to-play 2D fishing game where you relax on the lake, reel in quirky fish, and tackle bite-sized challenges.</p>
+      <p class="sub">This is an early demo build—expect simple, cozy gameplay, with more fish, locations, and challenges coming soon.</p>
+    </header>
+
+    <section class="hero" aria-label="Fishing Quest download section">
+      <div class="hero-card">
+        <div class="hero-content">
+          <h2 class="hero-title">Cast your first line</h2>
+          <p class="hero-text">
+            Drop into a small lake, hop into your boat, and see how many fish you can catch before the sun goes down.
+            This demo is focused on easy controls, calm vibes, and a few fun twists.
+          </p>
+          <div class="download-row">
+            <a class="download" href="downloads/fishing-game.zip" download>
+              <span class="icon">⬇</span>
+              <span>Download demo (ZIP)</span>
+            </a>
+            <span class="download-note">Desktop build • In-development preview</span>
+          </div>
+          <div class="tagline">
+            <span class="tagline-pill">Cute 2D style</span>
+            <span>Quick, cozy fishing sessions with light challenges.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-frame" aria-hidden="false">
+        <div class="image-inner">
+          <span class="image-sticker">
+            <span class="image-sticker-dot"></span>
+            Early art mockup
+          </span>
+          <!-- Replace src with your 16-bit fishing image file -->
+          <img src="generated-image.png" alt="16-bit style scene of a person fishing from a small boat on a calm lake at dusk." />
+        </div>
+      </div>
+    </section>
+
+    <section class="sections" aria-label="About and features">
+      <article class="card">
+        <div class="card-content">
+          <div class="card-label">
+            <span class="card-label-dot"></span>
+            About the game
+          </div>
+          <h3 class="card-title">A simple, relaxing fishing loop</h3>
+          <p>
+            Fishing Quest is being built as a friendly 2D fishing game:
+            easy-to-learn controls, quick sessions, and gentle progression.
+            Try the demo to get a feel for casting, reeling, and chasing higher scores while new content is in the works.
+          </p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-content">
+          <div class="card-label">
+            <span class="card-label-dot"></span>
+            What’s in this demo
+          </div>
+          <h3 class="card-title">Early build details</h3>
+          <p>
+            Still working on a name for the game along with what the goals and achievements are going to be during early release.
+          </p>
